@@ -3,20 +3,20 @@ const Joi = require('joi'); // importing joi module
 const app = express(); // creating a object for express module. This return a class refernce to app.
 app.use(express.json()); // this is to use json functionalities in express application
 const logger = require('./logger');
-app.use(logger); 
+app.use(logger);
 app.use(express.static('public'));
 const config = require('config');
 
 /* Pug implementation */
 
-app.set('view engine','pug');
-app.set('views','./views');
+app.set('view engine', 'pug');
+app.set('views', './views');
 
 app.get('/templateDemo', (req, res) => {
-    res.render('index', {title:'First Pug',heading:'This is a template heading'});
+    res.render('index', { title: 'First Pug', heading: 'This is a template heading' });
 })
 
-if(app.get('env') === 'deveopment') {
+if (app.get('env') === 'deveopment') {
     console.log("Development mode");
 }
 console.log("Name : " + config.get('name'));
@@ -301,16 +301,16 @@ app.get('/api/temp-data-for-iot', (req, res) => {
     let randomCo2 = Math.floor(Math.random() * (2000 - 0 + 1)) + 0;
     var date = new Date();
     //let label = 'T'+date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-	let label = '20190314160735';
+    let label = '20190314160735';
     var newData = {
-		success : 1,
-		data : {
-			label: label,
-			newTemp: randomTemp,
-			newPress: randomPress,
-			newHum: randomHum,
-			newCo2: randomCo2
-		}
+        success: 1,
+        data: {
+            label: label,
+            newTemp: randomTemp,
+            newPress: randomPress,
+            newHum: randomHum,
+            newCo2: randomCo2
+        }
     }
     res.send(newData);
 })
@@ -325,54 +325,87 @@ app.get('/api/temp-data-for-iot/mobile', (req, res) => {
     let randomGyro = Math.floor(Math.random() * (250 - 100 + 1)) + 100;
     var date = new Date();
     //let label = 'T'+date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-	let label = '20190314'+date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();;
+    let label = '20190314' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();;
     var newData = {
-		success : 1,
-		data : {
-			label: label,
-			newAcc: randomAcc,
-			newGPS: randomGPS,
-			newGyro: randomGyro
-		}
+        success: 1,
+        data: {
+            label: label,
+            newAcc: randomAcc,
+            newGPS: randomGPS,
+            newGyro: randomGyro
+        }
     }
     res.send(newData);
 })
 
 var fs = require("fs");
-app.get('/video', function(req, res) {
-    const path = 'assets/videos/movies/anbe-sivam.mp4'
+app.get('/api/video', function (req, res) {
+    const path = 'assets/videos/ads/' + req.query.video_id + '.' + req.query.video_type;
     const stat = fs.statSync(path)
     const fileSize = stat.size
     const range = req.headers.range
     if (range) {
-		console.log("range is: ",range);
-      const parts = range.replace(/bytes=/, "").split("-")
-      const start = parseInt(parts[0], 10)
-      const end = parts[1] 
-        ? parseInt(parts[1], 10)
-        : fileSize-1
-      const chunksize = (end-start)+1
-      const file = fs.createReadStream(path, {start, end})
-      const head = {
-        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': chunksize,
-        'Content-Type': 'video/mp4',
-      }
-      res.writeHead(206, head);
-      file.pipe(res);
+        console.log("range is: ", range);
+        const parts = range.replace(/bytes=/, "").split("-")
+        const start = parseInt(parts[0], 10)
+        const end = parts[1]
+            ? parseInt(parts[1], 10)
+            : fileSize - 1
+        const chunksize = (end - start) + 1
+        const file = fs.createReadStream(path, { start, end })
+        const head = {
+            'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': chunksize,
+            'Content-Type': 'video/mp4',
+        }
+        res.writeHead(206, head);
+        file.pipe(res);
     } else {
-      const head = {
-        'Content-Length': fileSize,
-        'Content-Type': 'video/mp4',
-      }
-      res.writeHead(200, head)
-      fs.createReadStream(path).pipe(res)
+        const head = {
+            'Content-Length': fileSize,
+            'Content-Type': 'video/mp4',
+        }
+        res.writeHead(200, head)
+        fs.createReadStream(path).pipe(res)
     }
-  });
+});
 
 
-app.get('/api/learn/:year/:month', (req,res) => {
+app.get('/api/videos/:gateway_id', (req, res) => {
+    let data = {
+        videos: [
+            {
+                video_id: 100,
+                video_url: "http://localhost:3000/api/video?video_id=100",
+                video_type: "mp4"
+            },
+            {
+                video_id: 101,
+                video_url: "http://localhost:3000/api/video?video_id=101",
+                video_type: "mp4"
+            },
+            {
+                video_id: 103,
+                video_url: "http://localhost:3000/api/video?video_id=103",
+                video_type: "mp4"
+            },
+            {
+                video_id: 105,
+                video_url: "http://localhost:3000/api/video?video_id=105",
+                video_type: "mp4"
+            },
+            {
+                video_id: 106,
+                video_url: "http://localhost:3000/api/video?video_id=106",
+                video_type: "mp4"
+            }
+        ]
+    }
+    res.send(data);
+})
+
+app.get('/api/learn/:year/:month', (req, res) => {
     let queryParams = {
         1: req.params
     }

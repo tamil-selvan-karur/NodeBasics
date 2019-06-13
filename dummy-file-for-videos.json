@@ -1,0 +1,29 @@
+{
+    "videos": [
+        {
+            "video_id": 100,
+            "video_url": "localhost/assets/videos/video1.mp4",
+            "video_type": "mp4"
+        },
+        {
+            "video_id": 101,
+            "video_url": "localhost/assets/videos/video2.mp4",
+            "video_type": "mp4"
+        },
+        {
+            "video_id": 102,
+            "video_url": "localhost/assets/videos/video3.mp4",
+            "video_type": "mp4"
+        },
+        {
+            "video_id": 103,
+            "video_url": "localhost/assets/videos/video4.mp4",
+            "video_type": "mp4"
+        },
+        {
+            "video_id": 104,
+            "video_url": "localhost/assets/videos/video5.mp4",
+            "video_type": "mp4"
+        }
+    ]
+}
